@@ -1,0 +1,144 @@
+# depslib dependency file v1.0
+1545441390 source:/home/nikola/Documentos/proyectos/MIA/practica 1/201403877/main.c
+	<stdio.h>
+	<stdlib.h>
+	<sys/stat.h>
+	"[MIA]disco_201403877.h"
+	"[MIA]reporte_201403877.h"
+	"lista.h"
+	"[MIA]sistema_archivos.h"
+
+1544947624 /home/nikola/Documentos/proyectos/MIA/practica 1/201403877/[MIA]disco_201403877.h
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<sys/stat.h>
+	<unistd.h>
+	<string.h>
+
+1544947624 source:/home/nikola/Documentos/proyectos/MIA/practica 1/201403877/[MIA]disco_201403877.h
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<sys/stat.h>
+	<unistd.h>
+	<string.h>
+
+1544926267 source:/home/nikola/Documentos/proyectos/MIA/practica 1/201403877/lista.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1544926267 /home/nikola/Documentos/proyectos/MIA/practica 1/201403877/lista.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1545117147 source:/home/nikola/Documentos/proyectos/MIA/practica 1/201403877/[MIA]reporte_201403877.h
+	<sys/stat.h>
+	<unistd.h>
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	<unistd.h>
+	"[MIA]disco_201403877.h"
+	"[MIA]sistema_archivos.h"
+
+1545117147 /home/nikola/Documentos/proyectos/MIA/practica 1/201403877/[MIA]reporte_201403877.h
+	<sys/stat.h>
+	<unistd.h>
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	<unistd.h>
+	"[MIA]disco_201403877.h"
+	"[MIA]sistema_archivos.h"
+
+1545457624 source:/home/nikola/Documentos/proyectos/MIA/practica 1/201403877/[MIA]sistema_archivos.h
+	"[MIA]disco_201403877.h"
+	"lista.h"
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<sys/stat.h>
+	<unistd.h>
+	<string.h>
+
+1545458671 /home/nikola/Documentos/proyectos/MIA/practica 1/201403877/[MIA]sistema_archivos.h
+	"[MIA]disco_201403877.h"
+	"lista.h"
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<sys/stat.h>
+	<unistd.h>
+	<string.h>
+
+1549759168 source:/home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/[MIA]disco_201403877.h
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<sys/stat.h>
+	<unistd.h>
+	<string.h>
+
+1549754831 source:/home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/[MIA]reporte_201403877.h
+	<sys/stat.h>
+	<unistd.h>
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	<unistd.h>
+	"[MIA]disco_201403877.h"
+
+1549759168 /home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/[MIA]disco_201403877.h
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<sys/stat.h>
+	<unistd.h>
+	<string.h>
+
+1545461585 /home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/[MIA]sistema_archivos.h
+	"[MIA]disco_201403877.h"
+	"lista.h"
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<sys/stat.h>
+	<unistd.h>
+	<string.h>
+
+1550019528 /home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/lista.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1550036487 source:/home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/lista.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1550036211 source:/home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/main.c
+	<stdio.h>
+	<stdlib.h>
+	<sys/stat.h>
+	"[MIA]disco_201403877.h"
+	"[MIA]reporte_201403877.h"
+	"matriz.h"
+
+1549754831 /home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/[MIA]reporte_201403877.h
+	<sys/stat.h>
+	<unistd.h>
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<string.h>
+	<unistd.h>
+	"[MIA]disco_201403877.h"
+
+1550036470 /home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/matriz.h
+
