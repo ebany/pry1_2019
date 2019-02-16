@@ -112,7 +112,7 @@ int get_numero(char letra){
     }
 }
 
-int verificar_nombre(char* nombre, char* letra){
+int verificar_nombre(char* nombre, char letra){
     HH* temporal = cabeza_h;
     if(temporal==NULL)
         return 0;
@@ -202,7 +202,7 @@ int add_nodo(char* path, char* name){
                     if(temporal2->arriba==NULL){
                         temporal->inicio = nuevo2;
                     }else
-                        temporal2->arriba->abajo = nuevo;
+                        temporal2->arriba->abajo = nuevo2;
                     temporal2->arriba = nuevo2;
                     return 1;
                 }else if(temporal2->abajo==NULL){
@@ -276,6 +276,77 @@ void mostrar_mount(){
         }
     }else{
         printf("\t### No hay particiones montadas\n\n");
+    }
+}
+
+void delete_disk(char* path){
+    HH* temporal = cabeza_h;
+    while(temporal!=NULL){
+        if(strcmp(temporal->path_disk,path)==0){
+            if(temporal->anterior!=NULL){
+                temporal->anterior->siguiente = temporal->siguiente;
+                if(temporal->siguiente!=NULL)
+                    temporal->siguiente->anterior = temporal->anterior;
+            }else{
+                if(temporal->siguiente!=NULL){
+                    temporal->siguiente->anterior = NULL;
+                    cabeza_h = temporal->siguiente;
+                }else{
+                    cabeza_h = NULL;
+                }
+            }
+            free(temporal);
+            break;
+        }
+        temporal = temporal->siguiente;
+    }
+}
+
+void delete_particion(char* path, char* name){
+    HH* temporal = cabeza_h;
+    if(temporal!=NULL){
+        NODOM* temporal2 = 0;
+        while(temporal!=NULL){
+            if(strcmp(temporal->path_disk,path)==0){
+                temporal2 = temporal->inicio;
+                break;
+            }
+            temporal = temporal->siguiente;
+        }
+        if(temporal2!=NULL){
+            while(temporal2!=NULL){
+                if(strcmp(temporal2->name,name)==0){
+                    if(temporal2->arriba!=NULL){
+                        temporal2->arriba->abajo = temporal2->abajo;
+                        if(temporal2->abajo!=NULL){
+                            temporal2->abajo->arriba = temporal2->arriba;
+                        }
+                        free(temporal2);
+                    }else{
+                        if(temporal2->abajo!=NULL){
+                            temporal->inicio = temporal2->abajo;
+                            temporal2->abajo->arriba = NULL;
+                            free(temporal2);
+                        }else{
+                            if(temporal->anterior!=NULL){
+                                temporal->anterior->siguiente = temporal->siguiente;
+                                if(temporal->siguiente!=NULL)
+                                    temporal->siguiente->anterior = temporal->anterior;
+                            }else{
+                                if(temporal->siguiente!=NULL){
+                                    temporal->siguiente->anterior = NULL;
+                                    cabeza_h = temporal->siguiente;
+                                }else{
+                                    cabeza_h = NULL;
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+                temporal2 = temporal2->abajo;
+            }
+        }
     }
 }
 

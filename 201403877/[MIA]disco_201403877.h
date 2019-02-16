@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
+#include "matriz.h"
 
 typedef struct extended {
     int part_status;        //particion activa o no
@@ -182,6 +183,7 @@ int eliminarDisco(char* path) {
                 if(datosFichero.st_mode & S_IWUSR) {
                     if(remove(path)==0) {
                         printf("\t### Disco eliminado\n");
+                        delete_disk(path);
                         return 1;
                     } else
                         printf("\t###Error: No se pudo eliminar el Disco\n");
@@ -420,6 +422,7 @@ int add_particion(long sizeD,char unit,char* path,char type,char fit,int deleteD
                                 infoDisk.part[3].part_status = 0;
                                 fseek(disco,0,SEEK_SET);
                                 fwrite(&infoDisk,sizeof(MBR),1,disco);
+                                delete_particion(path,name);
                                 printf("\t### Eliminacion de particion extendida exitosa\n");
                             }
                         } else {
@@ -468,6 +471,7 @@ int add_particion(long sizeD,char unit,char* path,char type,char fit,int deleteD
                                                 for(int n=0; n<obtenerLo.part_size-sizeof(EXTD); n++)
                                                     fwrite(&borr,sizeof(char),1,disco);
                                             }
+                                            delete_particion(path,name);
                                             printf("\t### Eliminacion exitosa de particions logica\n");
                                         } else {                     //en medio o ultimo
                                             //printf("   %ld ",anterior);
@@ -485,6 +489,7 @@ int add_particion(long sizeD,char unit,char* path,char type,char fit,int deleteD
                                                 for(int n=0; n<obtenerLo.part_size; n++)
                                                     fwrite(&borr,sizeof(char),1,disco);
                                             }
+                                            delete_particion(path,name);
                                             printf("\t### Eliminacion exitosa de particion logica\n");
                                         }
                                     }
@@ -527,6 +532,7 @@ int add_particion(long sizeD,char unit,char* path,char type,char fit,int deleteD
                                 infoDisk.part[3].part_status = 0;
                                 fseek(disco,0,SEEK_SET);
                                 fwrite(&infoDisk,sizeof(MBR),1,disco);
+                                delete_particion(path,name);
                                 printf("\t### Eliminacion exitosa de particion primaria\n");
                             }
                         }

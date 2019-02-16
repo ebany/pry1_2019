@@ -76,13 +76,14 @@
 	<unistd.h>
 	<string.h>
 
-1549759168 source:/home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/[MIA]disco_201403877.h
+1550165413 source:/home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/[MIA]disco_201403877.h
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
 	<sys/stat.h>
 	<unistd.h>
 	<string.h>
+	"matriz.h"
 
 1549754831 source:/home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/[MIA]reporte_201403877.h
 	<sys/stat.h>
@@ -94,13 +95,14 @@
 	<unistd.h>
 	"[MIA]disco_201403877.h"
 
-1549759168 /home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/[MIA]disco_201403877.h
+1550165413 /home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/[MIA]disco_201403877.h
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
 	<sys/stat.h>
 	<unistd.h>
 	<string.h>
+	"matriz.h"
 
 1545461585 /home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/[MIA]sistema_archivos.h
 	"[MIA]disco_201403877.h"
@@ -122,7 +124,7 @@
 	<stdlib.h>
 	<string.h>
 
-1550036211 source:/home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/main.c
+1550036524 source:/home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/main.c
 	<stdio.h>
 	<stdlib.h>
 	<sys/stat.h>
@@ -140,5 +142,5 @@
 	<unistd.h>
 	"[MIA]disco_201403877.h"
 
-1550036470 /home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/matriz.h
+1550165102 /home/nikola/Documentos/proyectos/MIA/proyecto1-2019/201403877/matriz.h
 
