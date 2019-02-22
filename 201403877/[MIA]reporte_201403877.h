@@ -50,7 +50,7 @@ void crearDisk(char* rutaDisco,char* rutaImg) {
                         float size_free = master.part[a].part_start-sizeof(MBR);
                         float size_mbr = master.mbr_tamanio;
                         float result = size_free*100/size_mbr;
-                        sprintf(text,"|{LIBRE|Size= %d Bytes\\l|%f%}",(int)size_free,result);
+                        sprintf(text,"|{LIBRE|Size= %d Bytes\\l%.2f%}",(int)size_free,result);
                         fputs(text,archivo);
                         fclose(archivo);
                     }
@@ -60,7 +60,7 @@ void crearDisk(char* rutaDisco,char* rutaImg) {
                         float size_free = master.part[a].part_start-(master.part[a-1].part_start+master.part[a-1].part_size);
                         float size_mbr = master.mbr_tamanio;
                         float result = size_free*100/size_mbr;
-                        sprintf(text,"|{LIBRE|Size= %d Bytes\\l|%f%}",(int)size_free,result);
+                        sprintf(text,"|{LIBRE|Size= %d Bytes\\l%.2f%}",(int)size_free,result);
                         fputs(text,archivo);
                         fclose(archivo);
                     }
@@ -71,19 +71,23 @@ void crearDisk(char* rutaDisco,char* rutaImg) {
                     float size_mbr = master.mbr_tamanio;
                     float size_prt = master.part[a].part_size;
                     float size_part = size_prt*100/size_mbr;
-                    sprintf(text,"|{%s/Primaria|Inicio= %d Bytes\\lSize= %d Bytes\\lAjsute= %c\\l|%f%}",master.part[a].part_name,master.part[a].part_start,master.part[a].part_size,master.part[a].part_fit,size_part);
+                    sprintf(text,"|{%s/Primaria|Size= %d Bytes\\l%.2f%}",master.part[a].part_name,master.part[a].part_size,size_part);
                     fputs(text,archivo);
                     fclose(archivo);
                 } else {                         //EXTENDIDA
                     //POSICIONARSE AL INICIO DE LA PARTICION
                     //OBTENER EBR
                     float size_part = 0;
+
+                    float aux_size = 0;
+
                     if(master.part[a].part_type=='e') {   //PRIMARIA
                         archivo = fopen("/home/nikola/Documentos/img.dot","a+");
                         float size_mbr = master.mbr_tamanio;
                         float size_prt = master.part[a].part_size;
+                        aux_size = size_prt;
                         size_part = size_prt*100/size_mbr;
-                        sprintf(text,"|{%s/Extendida|Inicio= %d Bytes\\lSize= %d Bytes\\lAjsute= %c\\l|{",master.part[a].part_name,master.part[a].part_start,master.part[a].part_size,master.part[a].part_fit);
+                        sprintf(text,"|{%s/Extendida|Size= %d Bytes\\lAjsute= %c\\l%.2f%|{",master.part[a].part_name,master.part[a].part_size,master.part[a].part_fit,size_part);
                         fputs(text,archivo);
                         fclose(archivo);
                     }
@@ -103,22 +107,22 @@ void crearDisk(char* rutaDisco,char* rutaImg) {
                                 archivo = fopen("/home/nikola/Documentos/img.dot","a+");
                                 float part_size =auxiliar.part_size*100;
                                 float size_mbr = master.mbr_tamanio;
-                                float result = part_size/size_mbr;
-                                sprintf(text,"{E\\lB\\lR\\l}|{%s/Logica|Inicio= %d Bytes\\lSize= %d Bytes\\lProximo= %d Bytes\\lAjsute= %c\\l|%f%}|",auxiliar.part_name,auxiliar.part_start,auxiliar.part_size,auxiliar.part_next,auxiliar.part_fit,result);
+                                float result = part_size/aux_size;
+                                sprintf(text,"{E\\lB\\lR\\l}|{%s/Logica|Size= %d Bytes\\l%.2f%}|",auxiliar.part_name,auxiliar.part_size,result);
                                 fputs(text,archivo);
                                 fclose(archivo);
                                 if(auxiliar.part_start + auxiliar.part_size<auxiliar.part_next) {
                                     char text1[1000];
                                     archivo = fopen("/home/nikola/Documentos/img.dot","a+");
                                     float size_free = auxiliar.part_next-(auxiliar.part_start + auxiliar.part_size);
-                                    sprintf(text1,"{Libre|Size= %d Bytes\\l|%f%}|",(int)size_free,size_free*100/master.mbr_tamanio);
+                                    sprintf(text1,"{Libre|Size= %d Bytes\\l%.2f%}|",(int)size_free,size_free*100/aux_size);
                                     fputs(text1,archivo);
                                     fclose(archivo);
                                 }
                             } else {
                                 archivo = fopen("/home/nikola/Documentos/img.dot","a+");
                                 float size_free = auxiliar.part_next-(master.part[a].part_start+sizeof(EXTD));
-                                sprintf(text,"{E\\lB\\lR\\l}|{Libre|Size= %d Bytes\\l|%f%}|",(int)size_free,size_free*100/master.mbr_tamanio);
+                                sprintf(text,"{E\\lB\\lR\\l}|{Libre|Size= %d Bytes\\l%.2f%}|",(int)size_free,size_free*100/aux_size);
                                 fputs(text,archivo);
                                 fclose(archivo);
                             }
@@ -126,14 +130,14 @@ void crearDisk(char* rutaDisco,char* rutaImg) {
                             if(auxiliar.part_status==1) {
                                 archivo = fopen("/home/nikola/Documentos/img.dot","a+");
                                 float part_size =auxiliar.part_size;
-                                sprintf(text,"{E\\lB\\lR\\l}|{%s/Logica|Inicio= %d Bytes\\lSize= %d Bytes\\lProximo= %d Bytes\\lAjsute= %c\\l|%f%}|",auxiliar.part_name,auxiliar.part_start,auxiliar.part_size,auxiliar.part_next,auxiliar.part_fit,part_size*100/master.mbr_tamanio);
+                                sprintf(text,"{E\\lB\\lR\\l}|{%s/Logica|Size= %d Bytes\\l%.2f%}|",auxiliar.part_name,auxiliar.part_size,part_size*100/aux_size);
                                 fputs(text,archivo);
                                 fclose(archivo);
                                 if(auxiliar.part_start + auxiliar.part_size<master.part[a].part_start+master.part[a].part_size) {
                                     char text1[1000];
                                     archivo = fopen("/home/nikola/Documentos/img.dot","a+");
                                     float free_size = master.part[a].part_start+master.part[a].part_size-(auxiliar.part_start + auxiliar.part_size);
-                                    sprintf(text1,"{Libre|Size= %d Bytes\\l|%f%}",(int)free_size,free_size*100/master.mbr_tamanio);
+                                    sprintf(text1,"{Libre|Size= %d Bytes\\l%.2f%}",(int)free_size,free_size*100/aux_size);
                                     fputs(text1,archivo);
                                     fclose(archivo);
                                 }
@@ -154,7 +158,7 @@ void crearDisk(char* rutaDisco,char* rutaImg) {
                     }
 
                     archivo = fopen("/home/nikola/Documentos/img.dot","a+");
-                    sprintf(text,"}|%f%}",size_part);
+                    sprintf(text,"}}");
                     fputs(text,archivo);
                     //fputs("}}",archivo);
                     fclose(archivo);
@@ -168,7 +172,7 @@ void crearDisk(char* rutaDisco,char* rutaImg) {
                 float size_free = master.mbr_tamanio-(master.part[vacio].part_start+master.part[vacio].part_size);
                 float size_mbr = master.mbr_tamanio;
                 float result = size_free*100/size_mbr;
-                sprintf(text,"|{LIBRE|Size= %d Bytes\\n|%f%}",(int)size_free,result);
+                sprintf(text,"|{LIBRE|Size= %d Bytes\\n%.2f%}",(int)size_free,result);
                 fputs(text,archivo);
                 fclose(archivo);
             }
@@ -178,7 +182,7 @@ void crearDisk(char* rutaDisco,char* rutaImg) {
             float size_free = master.mbr_tamanio-sizeof(MBR);
             float size_mbr = master.mbr_tamanio;
             float result = size_free*100/size_mbr;
-            sprintf(text,"|{LIBRE|Size= %d Bytes\\n|%f%}",(int)size_free,result);
+            sprintf(text,"|{LIBRE|Size= %d Bytes\\n%.2f%}",(int)size_free,result);
             fputs(text,archivo);
             fclose(archivo);
         }

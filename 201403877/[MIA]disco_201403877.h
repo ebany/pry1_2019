@@ -204,6 +204,8 @@ int encontrar_posicion(char fit, char* path,long sizeD,char type) {
     int tp = 0;
     int tl = 0;
 
+    //printf("%c\n",fit);
+
     FILE* disco;
     disco = fopen(path,"r+b");
     if(disco!=NULL) {
@@ -324,6 +326,8 @@ int encontrar_posicion(char fit, char* path,long sizeD,char type) {
                         if((logica.part_next - pos_ext)>=sizeD) {
                             propuesta = pos_ext;
                             libre = logica.part_next - (pos_ext + sizeD);
+                            if(fit=='f')
+                                return propuesta;
                         }
                         disco = fopen(path,"r+b");
                         fseek(disco,logica.part_next,SEEK_SET);
@@ -332,6 +336,7 @@ int encontrar_posicion(char fit, char* path,long sizeD,char type) {
                     }
                     //hay actual y siguiente
                     while(logica.part_next!=-1) {
+                        //printf("propuesta:%d - libre:%d - fit:%c\n",tl,libre,fit);
                         if((logica.part_next-(logica.part_start + logica.part_size))>=sizeD) { //si cabe, hay espacio disponible
                             tp = logica.part_start + logica.part_size;
                             tl = logica.part_next - (logica.part_start + logica.part_size + sizeD);
@@ -355,9 +360,12 @@ int encontrar_posicion(char fit, char* path,long sizeD,char type) {
                         fclose(disco);
                     }
                     //verificar ultima posicion
+                    //printf("%d - %d\n",((pos_ext + size_ext)-(logica.part_start + logica.part_size)),sizeD);
                     if(((pos_ext + size_ext)-(logica.part_start + logica.part_size))>=sizeD) { //si cabe
+                        //printf("hola mundo");
                         tp = logica.part_start + logica.part_size;
-                        tl = size_ext - (logica.part_start + logica.part_size + sizeD);
+                        tl = (pos_ext + size_ext) - (logica.part_start + logica.part_size + sizeD);
+                        //printf("propueta:%d - lbre:%d\n",tp,tl);
                         if(fit=='b') { //mejor ajuste
                             if(propuesta==0 || libre>tl) //es la primera propuesta
                                 propuesta = tp;
@@ -822,104 +830,122 @@ int add_particion(long sizeD,char unit,char* path,char type,char fit,int deleteD
             } else if(type=='l') {   //logicas
 
                 if(valNom==0) {
-                    long auxxx = encontrar_posicion(infoDisk.disk_fit,path,sizeD,type);
-                    if(auxxx==-2){
+
+                    char fit_aux = 'a';
+                    for(int a=0; a<4; a++) {
+                        if(infoDisk.part[a].part_status==1 && infoDisk.part[a].part_type=='e') {
+                            fit_aux = infoDisk.part[a].part_fit;
+                            break;
+                        }
+                    }
+
+                    if(fit_aux=='a'){
                         printf("\t###Error: No existe particion extendida\n");
-                    }else if(auxxx>0) {
-                        //llenar datos
-                        EXTD nuevoLogic;
-                        nuevoLogic.part_fit = fit;
-                        strcpy(nuevoLogic.part_name,name);
-                        nuevoLogic.part_next = -1;
-                        nuevoLogic.part_size = sizeD;
-                        nuevoLogic.part_start = auxxx;
-                        nuevoLogic.part_status = 1;
-                        //obtener primer ebr
-                        int pos_ext = 0;
-                        EXTD logica;
-                        for(int a=0; a<4; a++) {
-                            if(infoDisk.part[a].part_status==1 && infoDisk.part[a].part_type=='e') {
-                                pos_ext = infoDisk.part[a].part_start;
-                                break;
-                            }
-                        }
+                    }else {
+                        /*//estan al reves xD
+                        if(fit_aux=='b')
+                            fit_aux = 'w';
+                        else if(fit_aux=='w')
+                            fit_aux = 'b';*/
 
-                        //ver donde colocar
-                        disco = fopen(path,"r+b");
-                        fseek(disco,pos_ext,SEEK_SET);
-                        fread(&logica,sizeof(EXTD),1,disco);
-                        fclose(disco);
-
-                        if(logica.part_status==0 && logica.part_next==-1) { //no hay logicas
-                            disco = fopen(path,"r+b");
-                            fseek(disco,pos_ext,SEEK_SET);
-                            fwrite(&nuevoLogic,sizeof(EXTD),1,disco);
-                            fclose(disco);
-                            printf("\t###Particion logica creada1\n");
-                        } else if(logica.part_status!=0 && logica.part_next==-1) { //solo hay una, al inicio
-                            //sobreescribir actual
-                            logica.part_next = nuevoLogic.part_start;
-                            disco = fopen(path,"r+b");
-                            fseek(disco,pos_ext,SEEK_SET);
-                            fwrite(&logica,sizeof(EXTD),1,disco);
-                            //escribir siguiente ebr
-                            fseek(disco,logica.part_next,SEEK_SET);
-                            fwrite(&nuevoLogic,sizeof(EXTD),1,disco);
-                            fclose(disco);
-                            printf("\t###Particion logica creada2\n");
-                        } else { //recorrer
-                            if(logica.part_status==0 && logica.part_next!=-1) { //hay un espacio al inicio
-                                if(logica.part_next>nuevoLogic.part_start) {
-                                    nuevoLogic.part_next = logica.part_next;
-                                    disco = fopen(path,"r+b");
-                                    fseek(disco,pos_ext,SEEK_SET);
-                                    fwrite(&nuevoLogic,sizeof(EXTD),1,disco);
-                                    fclose(disco);
-                                    printf("\t###Particion logica creada3\n");
-                                    return 0;
+                        long auxxx = encontrar_posicion(fit_aux,path,sizeD,type);
+                        //printf("Propuesta: %d\n",auxxx);
+                        if(auxxx>0) {
+                            //llenar datos
+                            EXTD nuevoLogic;
+                            nuevoLogic.part_fit = fit;
+                            strcpy(nuevoLogic.part_name,name);
+                            nuevoLogic.part_next = -1;
+                            nuevoLogic.part_size = sizeD;
+                            nuevoLogic.part_start = auxxx;
+                            nuevoLogic.part_status = 1;
+                            //obtener primer ebr
+                            int pos_ext = 0;
+                            EXTD logica;
+                            for(int a=0; a<4; a++) {
+                                if(infoDisk.part[a].part_status==1 && infoDisk.part[a].part_type=='e') {
+                                    pos_ext = infoDisk.part[a].part_start;
+                                    break;
                                 }
-                                disco = fopen(path,"r+b");
-                                fseek(disco,logica.part_next,SEEK_SET);
-                                fread(&logica,sizeof(EXTD),1,disco);
-                                fclose(disco);
                             }
-                            //hay actual y siguiente
-                            while(logica.part_next!=-1) {
-                                if(logica.part_next>nuevoLogic.part_start) { //si cabe, hay espacio disponible
-                                    //sobreescribir actual
-                                    nuevoLogic.part_next = logica.part_next;
-                                    logica.part_next = nuevoLogic.part_start;
+
+                            //ver donde colocar
+                            disco = fopen(path,"r+b");
+                            fseek(disco,pos_ext,SEEK_SET);
+                            fread(&logica,sizeof(EXTD),1,disco);
+                            fclose(disco);
+
+                            if(logica.part_status==0 && logica.part_next==-1) { //no hay logicas
+                                disco = fopen(path,"r+b");
+                                fseek(disco,pos_ext,SEEK_SET);
+                                fwrite(&nuevoLogic,sizeof(EXTD),1,disco);
+                                fclose(disco);
+                                printf("\t###Particion logica creada1\n");
+                            } else if(logica.part_status!=0 && logica.part_next==-1) { //solo hay una, al inicio
+                                //sobreescribir actual
+                                logica.part_next = nuevoLogic.part_start;
+                                disco = fopen(path,"r+b");
+                                fseek(disco,pos_ext,SEEK_SET);
+                                fwrite(&logica,sizeof(EXTD),1,disco);
+                                //escribir siguiente ebr
+                                fseek(disco,logica.part_next,SEEK_SET);
+                                fwrite(&nuevoLogic,sizeof(EXTD),1,disco);
+                                fclose(disco);
+                                printf("\t###Particion logica creada2\n");
+                            } else { //recorrer
+                                if(logica.part_status==0 && logica.part_next!=-1) { //hay un espacio al inicio
+                                    if(logica.part_next>nuevoLogic.part_start) {
+                                        nuevoLogic.part_next = logica.part_next;
+                                        disco = fopen(path,"r+b");
+                                        fseek(disco,pos_ext,SEEK_SET);
+                                        fwrite(&nuevoLogic,sizeof(EXTD),1,disco);
+                                        fclose(disco);
+                                        printf("\t###Particion logica creada3\n");
+                                        return 0;
+                                    }
                                     disco = fopen(path,"r+b");
-                                    fseek(disco,logica.part_start,SEEK_SET);
-                                    fwrite(&logica,sizeof(EXTD),1,disco);
-                                    //escribir siguiente ebr
                                     fseek(disco,logica.part_next,SEEK_SET);
-                                    fwrite(&nuevoLogic,sizeof(EXTD),1,disco);
+                                    fread(&logica,sizeof(EXTD),1,disco);
                                     fclose(disco);
-                                    printf("\t###Particion logica creada4\n");
-                                    return 0;
                                 }
+                                //hay actual y siguiente
+                                while(logica.part_next!=-1) {
+                                    if(logica.part_next>nuevoLogic.part_start) { //si cabe, hay espacio disponible
+                                        //sobreescribir actual
+                                        nuevoLogic.part_next = logica.part_next;
+                                        logica.part_next = nuevoLogic.part_start;
+                                        disco = fopen(path,"r+b");
+                                        fseek(disco,logica.part_start,SEEK_SET);
+                                        fwrite(&logica,sizeof(EXTD),1,disco);
+                                        //escribir siguiente ebr
+                                        fseek(disco,logica.part_next,SEEK_SET);
+                                        fwrite(&nuevoLogic,sizeof(EXTD),1,disco);
+                                        fclose(disco);
+                                        printf("\t###Particion logica creada4\n");
+                                        return 0;
+                                    }
+                                    disco = fopen(path,"r+b");
+                                    fseek(disco,logica.part_next,SEEK_SET);
+                                    fread(&logica,sizeof(EXTD),1,disco);
+                                    fclose(disco);
+                                }
+                                //insertar al final
+                                //sobreescribir actual
+                                logica.part_next = nuevoLogic.part_start;
                                 disco = fopen(path,"r+b");
+                                fseek(disco,logica.part_start,SEEK_SET);
+                                fwrite(&logica,sizeof(EXTD),1,disco);
+                                //escribir siguiente ebr
                                 fseek(disco,logica.part_next,SEEK_SET);
-                                fread(&logica,sizeof(EXTD),1,disco);
+                                fwrite(&nuevoLogic,sizeof(EXTD),1,disco);
                                 fclose(disco);
+                                printf("\t###Particion logica creada5\n");
                             }
-                            //insertar al final
-                            //sobreescribir actual
-                            logica.part_next = nuevoLogic.part_start;
-                            disco = fopen(path,"r+b");
-                            fseek(disco,logica.part_start,SEEK_SET);
-                            fwrite(&logica,sizeof(EXTD),1,disco);
-                            //escribir siguiente ebr
-                            fseek(disco,logica.part_next,SEEK_SET);
-                            fwrite(&nuevoLogic,sizeof(EXTD),1,disco);
-                            fclose(disco);
-                            printf("\t###Particion logica creada5\n");
-                        }
 
 
-                    } else
-                        printf("\t###Error: No hay espacio disponible\n");
+                        } else
+                            printf("\t###Error: No hay espacio disponible\n");
+                    }
                 } else
                     printf("\t###Error: Ya existe una particion con el mismo nombre\n");
 
